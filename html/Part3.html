@@ -1,0 +1,306 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Part3</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-17"><meta name="DC.source" content="Part3.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">%Part3</span>
+fprintf(<span class="string">'Part 3\n'</span>)
+<span class="keyword">global</span> fieldQ3X fieldQ3Y;
+
+mo = 9.1e-31; <span class="comment">%mass in kg</span>
+mn = 0.26*mo; <span class="comment">%mass of electrons</span>
+q = 1.6e-19; <span class="comment">%Coulombs of an electron</span>
+
+regionW = [0 200e-9]; <span class="comment">%width of region</span>
+regionL = [0 100e-9]; <span class="comment">%Length of region</span>
+
+T = 300; <span class="comment">%in Kelvin</span>
+kB = 1.28e-23; <span class="comment">%in J/K</span>
+vthrms = sqrt((kB*T)/mn); <span class="comment">%thermal velocity rms</span>
+
+tmn = 0.2e-12; <span class="comment">%mean time between collisions</span>
+tstep = 0.01e-12;
+mfp = vthrms * tmn; <span class="comment">%mean free path</span>
+<span class="comment">%n = 1 + zero(1,1000); %number of molecules</span>
+<span class="comment">%mbd = (2/sqrt(pi)) .* n .* ((1/(k*T)^(3/2));</span>
+
+<span class="comment">%creating electrons</span>
+numE = 20000;
+x = regionW(1,2).*rand(1,numE); <span class="comment">%position</span>
+y = regionL(1,2).*rand(1,numE);
+<span class="comment">%ceating velocity</span>
+vx = randn(1,numE) .* vthrms;
+vy = randn(1,numE) .* vthrms;
+vf = sqrt(vy.^2 + vx.^2);
+
+<span class="comment">%Adding the electric field and acceleration</span>
+Ex = fieldQ3X; <span class="comment">%0.1/regionW(1,2); %Electric field V/m in the x direction**Output This*******</span>
+Ey = fieldQ3Y; <span class="comment">%0/regionL(1,2);</span>
+Fx = q.*(Ex); <span class="comment">%electric force in the x direction**********************</span>
+Fy = q.*Ey;
+
+ax = ones(1,numE).*(reshape(Fx,[1,numE])/mn);<span class="comment">%((Fx)/mn); %Acceleration of the electron in the x direction**********</span>
+ay = ones(1,numE).*(reshape(Fx,[1,numE])/mn);<span class="comment">%((Fy)/mn);</span>
+out = sprintf(num2str(Fx));
+<span class="comment">%fprintf('%s N on each electron\n',out)</span>
+
+figure(<span class="string">'name'</span>,<span class="string">'Part3'</span>)
+
+conc = 10^-15; <span class="comment">%given</span>
+fprintf(<span class="string">'b) the particles are trying to get as far away as possible from eachother\n'</span>)
+fprintf(<span class="string">'c) find a way to have the position calculated from acceleration in one step rather than multiple\n'</span>)
+fprintf(<span class="string">'or make the time steps even smaller\n'</span>)
+<span class="comment">%subplot(2,2,3)</span>
+<span class="comment">%hist(vf,100)</span>
+
+<span class="comment">%Scattering</span>
+pScat = 1 - exp(1)^(-(tstep/tmn)) + zeros(size(vf));
+
+<span class="keyword">for</span> n = 1:1000
+    vx = vx + ax.*tstep;
+    vy = vy + ay.*tstep;
+    x = x + vx.*tstep;
+    y = y + vy.*tstep;
+
+    <span class="comment">%when particle hit bottom or top</span>
+    vy(y &lt;= 0) = -vy(y&lt;=0);
+    vy(y&gt;=100e-9) = -vy(y&gt;=100e-9);
+    <span class="comment">%when particle hit sides</span>
+    x(x&lt;=0) = x(x&lt;=0)+200e-9;
+    x(x&gt;=200e-9) = x(x&gt;=200e-9)-200e-9;
+
+
+<span class="comment">    %{
+</span><span class="comment">    prob = rand(size(vf)) ;
+</span><span class="comment">    vy(pScat &gt; prob) = randn .* vthrms;
+</span><span class="comment">    vx(pScat &gt; prob) = randn .* vthrms;
+</span><span class="comment">    vf = sqrt(vy.^2 + vx.^2);
+</span><span class="comment">    %}
+</span>    <span class="comment">%creating plot area</span>
+    <span class="comment">%subplot(2,1,1)</span>
+
+    <span class="comment">%particles to be graphed</span>
+    showx = x(1:10);
+    showy = y(1:10);
+
+    <span class="comment">%plot of particles</span>
+    colours = linspace(1,10,length(showx));
+    subplot(2,1,1)
+    scatter(showx,showy,50,colours,<span class="string">'.'</span>)
+    xlim(regionW)
+    ylim(regionL)
+    title(<span class="string">'Particle movement'</span>)
+    pause(0.001)
+    hold <span class="string">on</span>
+
+    <span class="comment">%plot of density</span>
+    spot = [x',y'];
+    subplot(2,1,2);
+    hist3(spot,<span class="string">'Nbins'</span>,[20 10],<span class="string">'CdataMode'</span>,<span class="string">'auto'</span>,<span class="string">'FaceColor'</span>,<span class="string">'interp'</span>)
+    title(<span class="string">'Density'</span>)
+    <span class="comment">%view(2)</span>
+<span class="comment">    %{
+</span><span class="comment">    %plot of tempture
+</span><span class="comment">    subplot(2,1,2)
+</span><span class="comment">    temp = (mn/kB)*mean(vf)^2;
+</span><span class="comment">    scatter(n,temp,400,'r','.')
+</span><span class="comment">    title('Temperature (K)')
+</span><span class="comment">    hold on
+</span><span class="comment">    %}
+</span><span class="comment">    %{
+</span><span class="comment">    %plot of current over time
+</span><span class="comment">    vdx = sum(vx)/1000;
+</span><span class="comment">    J = q*vdx*conc; %refer to class 6 slide 6
+</span><span class="comment">    I = J/conc;
+</span><span class="comment">    subplot(3,1,3)
+</span><span class="comment">    scatter(n,I,400,'r','.')
+</span><span class="comment">    title('Current over time')
+</span><span class="comment">    hold on
+</span><span class="comment">    %}
+</span><span class="keyword">end</span>
+</pre><pre class="codeoutput">Part 3
+b) the particles are trying to get as far away as possible from eachother
+c) find a way to have the position calculated from acceleration in one step rather than multiple
+or make the time steps even smaller
+</pre><img vspace="5" hspace="5" src="Part3_01.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%Part3
+fprintf('Part 3\n')
+global fieldQ3X fieldQ3Y;
+
+mo = 9.1e-31; %mass in kg
+mn = 0.26*mo; %mass of electrons
+q = 1.6e-19; %Coulombs of an electron
+
+regionW = [0 200e-9]; %width of region
+regionL = [0 100e-9]; %Length of region
+
+T = 300; %in Kelvin
+kB = 1.28e-23; %in J/K
+vthrms = sqrt((kB*T)/mn); %thermal velocity rms
+
+tmn = 0.2e-12; %mean time between collisions
+tstep = 0.01e-12;
+mfp = vthrms * tmn; %mean free path
+%n = 1 + zero(1,1000); %number of molecules
+%mbd = (2/sqrt(pi)) .* n .* ((1/(k*T)^(3/2));
+
+%creating electrons
+numE = 20000;
+x = regionW(1,2).*rand(1,numE); %position
+y = regionL(1,2).*rand(1,numE); 
+%ceating velocity
+vx = randn(1,numE) .* vthrms;
+vy = randn(1,numE) .* vthrms;
+vf = sqrt(vy.^2 + vx.^2);
+
+%Adding the electric field and acceleration
+Ex = fieldQ3X; %0.1/regionW(1,2); %Electric field V/m in the x direction**Output This*******
+Ey = fieldQ3Y; %0/regionL(1,2);
+Fx = q.*(Ex); %electric force in the x direction**********************
+Fy = q.*Ey;
+
+ax = ones(1,numE).*(reshape(Fx,[1,numE])/mn);%((Fx)/mn); %Acceleration of the electron in the x direction**********
+ay = ones(1,numE).*(reshape(Fx,[1,numE])/mn);%((Fy)/mn);
+out = sprintf(num2str(Fx));
+%fprintf('%s N on each electron\n',out)
+
+figure('name','Part3')
+
+conc = 10^-15; %given
+fprintf('b) the particles are trying to get as far away as possible from eachother\n')
+fprintf('c) find a way to have the position calculated from acceleration in one step rather than multiple\n')
+fprintf('or make the time steps even smaller\n')
+%subplot(2,2,3)
+%hist(vf,100)
+
+%Scattering
+pScat = 1 - exp(1)^(-(tstep/tmn)) + zeros(size(vf));
+
+for n = 1:1000    
+    vx = vx + ax.*tstep;
+    vy = vy + ay.*tstep;
+    x = x + vx.*tstep;
+    y = y + vy.*tstep;
+    
+    %when particle hit bottom or top
+    vy(y <= 0) = -vy(y<=0);
+    vy(y>=100e-9) = -vy(y>=100e-9);
+    %when particle hit sides
+    x(x<=0) = x(x<=0)+200e-9;
+    x(x>=200e-9) = x(x>=200e-9)-200e-9;
+   
+    
+    %{
+    prob = rand(size(vf)) ;
+    vy(pScat > prob) = randn .* vthrms;
+    vx(pScat > prob) = randn .* vthrms;
+    vf = sqrt(vy.^2 + vx.^2);
+    %}
+    %creating plot area
+    %subplot(2,1,1)
+    
+    %particles to be graphed
+    showx = x(1:10);
+    showy = y(1:10);
+    
+    %plot of particles
+    colours = linspace(1,10,length(showx));
+    subplot(2,1,1)
+    scatter(showx,showy,50,colours,'.')
+    xlim(regionW)
+    ylim(regionL)
+    title('Particle movement')
+    pause(0.001)
+    hold on
+    
+    %plot of density
+    spot = [x',y'];
+    subplot(2,1,2);
+    hist3(spot,'Nbins',[20 10],'CdataMode','auto','FaceColor','interp')
+    title('Density')
+    %view(2)
+    %{
+    %plot of tempture
+    subplot(2,1,2)
+    temp = (mn/kB)*mean(vf)^2;
+    scatter(n,temp,400,'r','.')
+    title('Temperature (K)')
+    hold on
+    %}
+    %{
+    %plot of current over time
+    vdx = sum(vx)/1000;
+    J = q*vdx*conc; %refer to class 6 slide 6
+    I = J/conc;
+    subplot(3,1,3)
+    scatter(n,I,400,'r','.')
+    title('Current over time')
+    hold on
+    %}
+end
+##### SOURCE END #####
+--></body></html>

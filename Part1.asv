@@ -1,0 +1,112 @@
+mo = 9.1e-31; %mass in kg
+mn = 0.26*mo; %mass of electrons
+q = 1.6e-19; %Coulombs of an electron
+
+regionW = [0 200e-9]; %width of region
+regionL = [0 100e-9]; %Length of region
+
+T = 300; %in Kelvin
+kB = 1.28e-23; %in J/K
+vthrms = sqrt((kB*T)/mn); %thermal velocity rms
+
+tmn = 0.2e-12; %mean time between collisions
+tstep = 0.01e-12;
+mfp = vthrms * tmn; %mean free path
+Vox = 0.1; %voltage applied in the x direction
+Voy = 0; %voltage applied in the y direction
+
+%n = 1 + zero(1,1000); %number of molecules
+%mbd = (2/sqrt(pi)) .* n .* ((1/(k*T)^(3/2));
+
+%creating electrons
+x = regionW(1,2).*rand(1,1000); %position
+y = regionL(1,2).*rand(1,1000); 
+%ceating velocity
+vx = randn(1,1000) .* vthrms;
+vy = randn(1,1000) .* vthrms;
+vf = sqrt(vy.^2 + vx.^2);
+
+%Adding the electric field and acceleration
+Ex = Vox/regionW(1,2); %Electric field V/m in the x direction**Output This*******
+Ey = Voy/regionL(1,2);
+out1 = sprintf(num2str(Ex));
+fprintf('The electric filed in the x direction is %s V/m\n',out1)
+Fx = q*(Ex); %electric force in the x direction**********************
+Fy = q*Ey;
+ax = ones(1,1000).*(Fx/mn); %Acceleration of the electron in the x direction**********
+ay = ones(1,1000).*(Fy/mn);
+out = sprintf(num2str(Fx));
+fprintf('%s N on each electron\n',out)
+
+figure('name','Part1')
+
+conc = 10^-15*0.0001; %given
+
+fprintf('The faster the average carrier velocity the higer current density')
+fprintf('The formula for current is I = J/concentration/n')
+fprintf('Where J = q*vd*concentration/n q = 1.6e-19 C/n vd is drift velocity/n')
+
+%Scattering
+pScat = 1 - exp(1)^(-(tstep/tmn)) + zeros(size(vf));
+
+for n = 1:200    
+    vx = vx + ax.*tstep;
+    vy = vy + ay.*tstep;
+    x = x + vx.*tstep;
+    y = y + vy.*tstep;
+    
+    %when particle hit bottom or top
+    vy(y <= 0) = -vy(y<=0);
+    vy(y>=100e-9) = -vy(y>=100e-9);
+    %when particle hit sides
+    x(x<=0) = x(x<=0)+200e-9;
+    x(x>=200e-9) = x(x>=200e-9)-200e-9;
+   
+    
+    %{
+    prob = rand(size(vf)) ;
+    vy(pScat > prob) = randn .* vthrms;
+    vx(pScat > prob) = randn .* vthrms;
+    vf = sqrt(vy.^2 + vx.^2);
+    %}
+    %creating plot area
+    subplot(2,2,[1 2])
+    
+    %particles to be graphed
+    showx = x(1:10);
+    showy = y(1:10);
+    
+    %plot of particles
+    colours = linspace(1,10,length(showx));
+    scatter(showx,showy,50,colours,'.')
+    xlim(regionW)
+    ylim(regionL)
+    title('Particle movement')
+    pause(0.001)
+    hold on
+    
+    
+    %plot of tempture
+    subplot(2,2,3)
+    temp = (mn/kB)*mean(vf)^2;
+    scatter(n,temp,400,'r','.')
+    title('Temperature (K)')
+    hold on
+    
+    %plot of current over time
+    vdx = sum(vx)/1000;
+    J = q*vdx*conc; %refer to class 6 slide 6
+    I = J/conc;
+    subplot(2,2,4)
+    scatter(n,I,400,'r','.')
+    title('Current over time')
+    hold on
+    
+    %plot of density
+    spot = [x',y'];
+    subplot(2,1,2);
+    hist3(spot,'Nbins',[10 10],'CdataMode','auto')
+    
+end
+
+
